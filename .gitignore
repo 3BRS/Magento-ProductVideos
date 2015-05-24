@@ -3,8 +3,6 @@ app/code/community/Phoenix/
 app/code/community/Cm/
 app/code/core/
 app/design/adminhtml/default/default/
-app/design/frontend/base/
-app/design/frontend/rwd/
 app/design/frontend/default/blank/
 app/design/frontend/default/default/
 app/design/frontend/default/iphone/

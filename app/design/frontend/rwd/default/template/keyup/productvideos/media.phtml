@@ -1,0 +1,92 @@
+<?php
+/**
+ * Template with placement of embeded video players into standard picture gallery
+ *
+ * @package     Keyup_ProductVideos
+ * @author      Jan Kuchař <jan.kuchar@keyup.eu>
+ * @copyright   Copyright (c) 2015 Keyup IT Services (http://www.keyup.eu)
+ * @license     http://keyup.mit-license.org/2012 MIT License
+ */
+?>
+<?php
+    $_product = $this->getProduct();
+    //$_helper = $this->helper('catalog/output');
+    $PVMC = Mage::getModel('keyup_productvideos/config');
+    $PVH = Mage::helper('keyup_productvideos');
+?>
+<div class="product-image product-image-zoom">
+    <div class="product-image-gallery productvideos-gallery <?php echo ($PVMC->isBehaviorMoviesFirst())?'productvideos-hidden':'';?>">
+        <img id="image-main"
+             class="gallery-image visible"
+             src="<?php echo $this->helper('catalog/image')->init($_product, 'image') ?>"
+             alt="<?php echo $this->escapeHtml($this->getImageLabel()) ?>"
+             title="<?php echo $this->escapeHtml($this->getImageLabel()); ?>" />
+
+        <?php
+            $i=0;
+            foreach ($this->getGalleryImages() as $_image):
+                $_imageUrl = $this->helper('catalog/image')
+                                  ->init($_product, 'image', $_image->getFile())
+                                  ->keepFrame(false)
+                                  ->constrainOnly(true)
+                                  ->resize(1200);
+        ?>
+            <img id="image-<?php echo $i; ?>"
+                 class="gallery-image"
+                 src="<?php echo $_imageUrl; ?>"
+                 data-zoom-image="<?php echo  $_imageUrl; ?>" />
+        <?php
+            $i++;
+            endforeach;
+        ?>
+    </div>
+    <?php
+    if (!$PVMC->isBehaviorMoviesUnderDescription()) {
+        $i=0;
+        foreach ($PVH->buildEmbeds($_product) as $embed) {
+            ?><div class="product-video-gallery productvideos-player productvideos-player-<?php echo $i++;?>  <?php echo ($PVMC->isBehaviorPicturesFirst() || ($PVMC->isBehaviorMoviesFirst() && $i>1))?'productvideos-hidden':'';?>"><?php
+            echo $embed;
+            ?></div><?php
+        }
+    }
+    ?>
+</div>
+
+<?php if (count($this->getGalleryImages()) > 0 || $PVH->getCount($_product) > 0): ?>
+<div class="more-views">
+    <h2><?php echo $this->__('More Views') ?></h2>
+    <ul class="product-image-thumbs">
+    <?php
+    $i=0;
+    foreach ($this->getGalleryImages() as $_image)
+        if (!(($filterClass = $this->getGalleryFilterHelper()) && ($filterMethod = $this->getGalleryFilterMethod()) && !Mage::helper($filterClass)->$filterMethod($_product, $_image))) {
+        $_images .= <<<IMG
+        <li>
+            <a class="thumb-link" href="#" title="{$this->escapeHtml($_image->getLabel())}" data-image-index="{$i}">
+                <img src="{$this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_image->getFile())->resize(75)}"
+                    width="75" height="75" alt="{$this->escapeHtml($_image->getLabel())}" />
+            </a>
+        </li>
+IMG;
+        $i++;
+    }
+    if (!$PVMC->isBehaviorMoviesUnderDescription()) {
+        $i=0;
+        foreach ($PVH->buildThumbs($_product) as $thumb) {
+            $_videos .= <<<VID
+            <li>
+                <a class="thumb-link-pv" href="#" data-video-index="$i">
+                    <img src="{$thumb}" width="75" height="75" alt="{$thumb}" />
+                </a>
+            </li>
+VID;
+            $i++;
+        }
+    }
+    echo ($PVMC->isBehaviorMoviesFirst()) ? $_videos.$_images : $_images.$_videos;
+    ?>
+    </ul>
+</div>
+<?php endif; ?>
+
+<?php echo $this->getChildHtml('after'); ?>

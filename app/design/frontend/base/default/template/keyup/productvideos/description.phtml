@@ -1,0 +1,26 @@
+<?php
+/**
+ * Template with embeded video players placed afted description content
+ *
+ * @package     Keyup_ProductVideos
+ * @author      Jan Kuchař <jan.kuchar@keyup.eu>
+ * @copyright   Copyright (c) 2015 Keyup IT Services (http://www.keyup.eu)
+ * @license     http://keyup.mit-license.org/2012 MIT License
+ */
+?>
+<?php $_product = $this->getProduct();?>
+<?php $_description = $_product->getDescription(); ?>
+<?php if ($_description): ?>
+    <h2><?php echo $this->__('Details') ?></h2>
+    <div class="std">
+        <?php echo $this->helper('catalog/output')->productAttribute($this->getProduct(), $_description, 'description') ?>
+    </div>
+<?php endif; ?>
+
+<?php
+if (Mage::getModel('keyup_productvideos/config')->isBehaviorMoviesUnderDescription()) {
+    foreach (Mage::helper('keyup_productvideos')->buildEmbeds($_product) as $i) {
+        printf('<div class="productvideos-description-container">%s</div>', $i);
+    }
+}
+?>

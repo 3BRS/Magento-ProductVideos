@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<layout>
+    <catalog_product_view>
+        <reference name="product.info.media">
+            <action method="setTemplate">
+                <template>keyup/productvideos/media.phtml</template>
+            </action>
+        </reference>
+        <reference name="product.description">
+            <action method="setTemplate">
+                <template>keyup/productvideos/description.phtml</template>
+            </action>
+        </reference>
+        <reference name="head">
+             <action method="addCss"><stylesheet>css/keyup/productvideos.css</stylesheet></action>
+             <action method="addItem">
+                 <type>skin_js</type>
+                 <name>js/keyup/productvideos.js</name>
+             </action>
+        </reference>
+    </catalog_product_view>
+</layout>
